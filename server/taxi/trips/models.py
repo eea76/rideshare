@@ -6,7 +6,14 @@ from django.shortcuts import reverse
 from django.conf import settings
 
 class User(AbstractUser):
-    pass
+    @property
+    def group(self):
+        groups = self.groups.all()
+
+        if groups:
+            return groups[0].name
+        else:
+            return None
 
 
 class Trip(models.Model):
