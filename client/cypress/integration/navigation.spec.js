@@ -29,5 +29,3 @@ describe('Navigation', function() {
         cy.hash().should('eq', '#/sign-up');
     });
 })
-
-
