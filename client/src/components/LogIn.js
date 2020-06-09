@@ -61,6 +61,7 @@ function LogIn (props) {
                             )}
                         </Formik>
                     </Card.Body>
+
                     <p className='mt-3 text-center'>
                         Don't have an account? <Link to='/sign-up'>Sign up!</Link>
                     </p>
