@@ -15,30 +15,56 @@ const logIn = () => {
 
 describe('Authentication', function() {
 
-    it('Can sign up', function() {
-        cy.server();
-        cy.route('POST', '**/api/sign_up/**').as('signUp');
+    it('Can sign up.', function () {
+    cy.server();
+    cy.route('POST', '**/api/sign_up/**').as('signUp');
 
-        cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary3.cole@example.com');
-        cy.get('input#firstName').type('Gary');
-        cy.get('input#lastName').type('Cole');
-        cy.get('input#password').type('pAssw0rd', { log: false });
-        cy.get('select#group').select('driver');
+    cy.visit('/#/sign-up');
+    cy.get('input#username').type('gary.cole17@example.com');
+    cy.get('input#firstName').type('Gary');
+    cy.get('input#lastName').type('Cole');
+    cy.get('input#password').type('pAssw0rd', { log: false });
+    cy.get('select#group').select('driver');
 
-        // file upload
-        cy.fixture('images/photo.jpg').then(photo => {
-            cy.get('input#photo').upload({
-                fileContent: photo,
-                fileName: 'photo.jpg',
-                mimeType: 'application/json'
-            });
-        });
-
-        cy.get('button').contains('Sign up').click();
-        cy.wait('@signUp');
-        cy.hash().should('eq', '#/log-in');
+    // Handle file upload
+    cy.fixture('images/photo.jpg').then(photo => {
+      cy.get('input#photo').upload({
+        fileContent: photo,
+        fileName: 'photo.jpg',
+        mimeType: 'application/json'
+      });
     });
+
+    cy.get('button').contains('Sign up').click();
+    cy.wait('@signUp');
+    cy.hash().should('eq', '#/log-in');
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     it('Can log in.', function() {
         logIn();
@@ -100,7 +126,7 @@ describe('Authentication', function() {
             }
         }).as('signUp');
         cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary3.cole#example.com');
+        cy.get('input#username').type('gary17.cole#example.com');
         cy.get('input#firstName').type('Gary');
         cy.get('input#lastName').type('Cole');
         cy.get('input#password').type('pAssw0rd', { log: false });

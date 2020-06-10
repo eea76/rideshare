@@ -20,7 +20,6 @@ function SignUp (props) {
         formData.append('group', values.group);
         formData.append('photo', values.photo);
 
-
         try {
             await axios.post(url, formData);
             setSubmitted(true);
