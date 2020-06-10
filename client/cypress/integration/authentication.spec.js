@@ -1,14 +1,14 @@
 const logIn = () => {
-    const { username, password } = Cypress.env('credentials')
+    const { username, password } = Cypress.env('credentials');
 
-    // capture HTTP requests
+    // Capture HTTP requests.
     cy.server();
     cy.route('POST', '**/api/log_in/**').as('logIn');
 
-    // log into the app
+    // Log into the app.
     cy.visit('/#/log-in');
     cy.get('input#username').type(username);
-    cy.get('input#password').type(password, { log: false});
+    cy.get('input#password').type(password, { log: false });
     cy.get('button').contains('Log in').click();
     cy.wait('@logIn');
 };
@@ -16,55 +16,29 @@ const logIn = () => {
 describe('Authentication', function() {
 
     it('Can sign up.', function () {
-    cy.server();
-    cy.route('POST', '**/api/sign_up/**').as('signUp');
+        cy.server();
+        cy.route('POST', '**/api/sign_up/**').as('signUp');
 
-    cy.visit('/#/sign-up');
-    cy.get('input#username').type('gary.cole17@example.com');
-    cy.get('input#firstName').type('Gary');
-    cy.get('input#lastName').type('Cole');
-    cy.get('input#password').type('pAssw0rd', { log: false });
-    cy.get('select#group').select('driver');
+        cy.visit('/#/sign-up');
+        cy.get('input#username').type('gary.cole17@example.com');
+        cy.get('input#firstName').type('Gary');
+        cy.get('input#lastName').type('Cole');
+        cy.get('input#password').type('pAssw0rd', { log: false });
+        cy.get('select#group').select('driver');
 
-    // Handle file upload
-    cy.fixture('images/photo.jpg').then(photo => {
-      cy.get('input#photo').upload({
-        fileContent: photo,
-        fileName: 'photo.jpg',
-        mimeType: 'application/json'
-      });
+        // Handle file upload
+        cy.fixture('images/photo.jpg').then(photo => {
+          cy.get('input#photo').upload({
+            fileContent: photo,
+            fileName: 'photo.jpg',
+            mimeType: 'application/json'
+          });
+        });
+
+        cy.get('button').contains('Sign up').click();
+        cy.wait('@signUp');
+        cy.hash().should('eq', '#/log-in');
     });
-
-    cy.get('button').contains('Sign up').click();
-    cy.wait('@signUp');
-    cy.hash().should('eq', '#/log-in');
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     it('Can log in.', function() {
         logIn();

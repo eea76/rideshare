@@ -4,6 +4,14 @@
         "credentials": {
             "username": "gary17.cole@example.com",
             "password": "pAssw0rd"
+        },
+
+        "database": {
+            "host": "localhost",
+            "user": "taxi",
+            "password": "taxi",
+            "database": "test",
+            "port": "5433"
         }
     }
 }
