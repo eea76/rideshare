@@ -3,15 +3,7 @@ const logIn = () => {
 
     // capture HTTP requests
     cy.server();
-    cy.route({
-        method: 'POST',
-        url: '**/api/log_in**',
-        status: 200,
-        response: {
-            'access': 'ACCESS_TOKEN',
-            'refresh': 'REFRESH_TOKEN'
-        }
-    }).as('logIn');
+    cy.route('POST', '**/api/log_in/**').as('logIn');
 
     // log into the app
     cy.visit('/#/log-in');
@@ -23,29 +15,12 @@ const logIn = () => {
 
 describe('Authentication', function() {
 
-    it('Can log in.', function() {
-        logIn();
-        cy.hash().should('eq', '#/');
-    });
-
     it('Can sign up', function() {
         cy.server();
-        cy.route({
-            method: 'POST',
-            url: '**/api/sign_up/**',
-            status: 201,
-            response: {
-                'id': 1,
-                'username': 'gary.cole@example.com',
-                'first_name': 'Gary',
-                'last_name': 'Cole',
-                'group': 'driver',
-                'photo': '/media/images/photo.jpg'
-            }
-        }).as('signUp');
+        cy.route('POST', '**/api/sign_up/**').as('signUp');
 
         cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary.cole@example.com');
+        cy.get('input#username').type('gary3.cole@example.com');
         cy.get('input#firstName').type('Gary');
         cy.get('input#lastName').type('Cole');
         cy.get('input#password').type('pAssw0rd', { log: false });
@@ -63,6 +38,11 @@ describe('Authentication', function() {
         cy.get('button').contains('Sign up').click();
         cy.wait('@signUp');
         cy.hash().should('eq', '#/log-in');
+    });
+
+    it('Can log in.', function() {
+        logIn();
+        cy.hash().should('eq', '#/');
     });
 
     it('Cannot visit the login page when logged in.', function() {
@@ -86,17 +66,7 @@ describe('Authentication', function() {
     it('Shows an alert on login error.', function() {
         const { username, password } = Cypress.env('credentials');
         cy.server();
-        cy.route({
-            method: 'POST',
-            url: '**/api/log_in**',
-            status: 400,
-            response: {
-                '__all__': [
-                    'Please enter a correct username and password. ' +
-                    'Note that both fields may be case-sensitive.'
-                ]
-            }
-        }).as('logIn');
+        cy.route('POST', '**/api/log_in/**').as('logIn');
         cy.visit('/#/log-in');
         cy.get('input#username').type(username);
         cy.get('input#password').type(password, { log: false });
@@ -130,7 +100,7 @@ describe('Authentication', function() {
             }
         }).as('signUp');
         cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary.cole#example.com');
+        cy.get('input#username').type('gary3.cole#example.com');
         cy.get('input#firstName').type('Gary');
         cy.get('input#lastName').type('Cole');
         cy.get('input#password').type('pAssw0rd', { log: false });
