@@ -6,6 +6,8 @@ import { Link, Redirect, Route, Switch } from 'react-router-dom';
 
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
+import Driver from './components/Driver.js';
+import Rider from './components/Rider.js';
 
 import './App.css';
 
@@ -83,16 +85,25 @@ function App () {
                     <Route path='/sign-up' render={() => (
                         isLoggedIn ? (
                             <Redirect to='/' />
-                            ) : (
-                                <SignUp />
-                            )
+                        ) : (
+                            <SignUp />
+                        )
                     )} />
+
                     <Route path='/log-in' render={() => (
                         isLoggedIn ? (
-                        <Redirect to='/' />
-                    ) : (
-                        <LogIn logIn={logIn} />
-                    )
+                            <Redirect to='/' />
+                        ) : (
+                            <LogIn logIn={logIn} />
+                        )
+                    )} />
+
+                    <Route path='/driver' render={() => (
+                        <Driver />
+                    )} />
+
+                    <Route path='/rider' render={() => (
+                        <Rider />
                     )} />
 
                 </Switch>

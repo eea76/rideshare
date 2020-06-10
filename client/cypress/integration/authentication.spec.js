@@ -15,12 +15,18 @@ const logIn = () => {
 
 describe('Authentication', function() {
 
+    // clears the database each time run a test
+    // so the default user can sign up successfully
+    before(function () {
+        cy.task('tableTruncate', { table: 'trips_user' });
+    });
+
     it('Can sign up.', function () {
         cy.server();
         cy.route('POST', '**/api/sign_up/**').as('signUp');
 
         cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary.cole17@example.com');
+        cy.get('input#username').type('gary.cole@example.com');
         cy.get('input#firstName').type('Gary');
         cy.get('input#lastName').type('Cole');
         cy.get('input#password').type('pAssw0rd', { log: false });
@@ -63,10 +69,20 @@ describe('Authentication', function() {
         cy.get('button#logIn').should('not.exist');
     });
 
-    it('Shows an alert on login error.', function() {
+    it('Shows an alert on login error.', function () {
         const { username, password } = Cypress.env('credentials');
         cy.server();
-        cy.route('POST', '**/api/log_in/**').as('logIn');
+        cy.route({
+            method: 'POST',
+            url: '**/api/log_in/**',
+            status: 400,
+            response: {
+                '__all__': [
+                    'Please enter a correct username and password. ' +
+                    'Note that both fields may be case-sensitive.'
+                ]
+            }
+        }).as('logIn');
         cy.visit('/#/log-in');
         cy.get('input#username').type(username);
         cy.get('input#password').type(password, { log: false });
@@ -77,7 +93,7 @@ describe('Authentication', function() {
             'Note that both fields may be case-sensitive.'
         );
         cy.hash().should('eq', '#/log-in');
-    });
+  });
 
     it('Can log out.', function() {
         logIn();
@@ -100,7 +116,7 @@ describe('Authentication', function() {
             }
         }).as('signUp');
         cy.visit('/#/sign-up');
-        cy.get('input#username').type('gary17.cole#example.com');
+        cy.get('input#username').type('gary.cole@example.com');
         cy.get('input#firstName').type('Gary');
         cy.get('input#lastName').type('Cole');
         cy.get('input#password').type('pAssw0rd', { log: false });
