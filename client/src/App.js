@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
+import {
+    Button, Container, Form, Nav, Navbar
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 
+import { isDriver, isRider } from './services/AuthService';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Driver from './components/Driver.js';
@@ -72,16 +75,35 @@ function App () {
                                             to='/sign-up'
                                         >Sign up</Link>
                                         <Link
-                                        id='logIn'
-                                        className='btn btn-primary'
-                                        to='/log-in'
+                                            id='logIn'
+                                            className='btn btn-primary'
+                                            to='/log-in'
                                         >Log in</Link>
                                     </>
                                 )
                             }
 
+                            {
+                                isRider() && (
+                                    <Link
+                                        className='btn btn-primary'
+                                        to='/rider'
+                                    >Dashboard</Link>
+                                )
+                            }
+
+                            {
+                                isDriver() && (
+                                    <Link
+                                        className='btn btn-primary'
+                                        to='/driver'
+                                    >Dashboard</Link>
+                                )
+                            }
+
                         </div>
                     )} />
+
                     <Route path='/sign-up' render={() => (
                         isLoggedIn ? (
                             <Redirect to='/' />

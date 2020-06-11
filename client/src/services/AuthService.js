@@ -18,3 +18,13 @@ export const isRider = () => {
     const user = getUser();
     return user && user.group === 'rider';
 };
+
+export const getAccessToken = () => {
+    const auth = JSON.parse(window.localStorage.getItem('taxi.auth'));
+
+    if (auth) {
+        return auth.access;
+    }
+
+    return undefined;
+}
