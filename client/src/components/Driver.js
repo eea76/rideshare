@@ -63,7 +63,6 @@ function Driver(props) {
                     otherGroup='rider'
                 />
 
-
                 <TripCard
                     title='Requested Trips'
                     trips={getRequestedTrips()}

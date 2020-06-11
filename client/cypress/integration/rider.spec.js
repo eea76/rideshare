@@ -41,4 +41,58 @@ describe('The rider dashboard', function() {
         cy.visit('/#/rider')
         cy.hash().should('eq', '#/rider')
     })
+
+    context('When there are no trips', function() {
+        before(function() {
+            cy.task('tableTruncate', {
+                table: 'trips_trip'
+            });
+        });
+
+        it('Displays messages for no trips', function() {
+            cy.server();
+            cy.route('GET', '**/api/trip/').as('getTrips');
+
+            logIn();
+
+            cy.visit('/#/rider');
+            cy.wait('@getTrips');
+
+            // current trips
+            cy.get('[data-cy=trip-card]')
+                .eq(0)
+                .contains('No trips.');
+
+            // completed trips
+            cy.get('[data-cy=trip-card]')
+                .eq(1)
+                .contains('No trips.');
+        });
+    });
+
+    context('When there are trips.', function() {
+        before(function() {
+            cy.loadTripData();
+        });
+
+        it('Displays current and completed trips', function() {
+            cy.server();
+            cy.route('GET', '**/api/trip/').as('getTrips');
+
+            logIn();
+
+            cy.visit('/#/rider');
+            cy.wait('@getTrips');
+
+            // current trips
+            cy.get('[data-cy=trip-card]')
+                .eq(0)
+                .contains('STARTED')
+
+            // completed trips
+            cy.get('[data-cy=trip-card]')
+                .eq(1)
+                .contains('COMPLETED');
+        });
+    });
 })
