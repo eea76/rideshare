@@ -65,8 +65,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'trips.USER'
-
+AUTH_USER_MODEL = 'trips.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -85,29 +84,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-
 STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, '../static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '../media')
+REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
 
-
-REDIS_URL = config('redis_url')
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [REDIS_URL]
+            'hosts': [REDIS_URL],
         },
     },
 }
