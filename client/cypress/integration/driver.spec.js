@@ -1,4 +1,4 @@
-import { webSocket } from 'rxjs/webSocket');
+import { webSocket } from 'rxjs/webSocket';
 
 const logIn = () => {
     const { username, password } = Cypress.env('driver');
@@ -75,44 +75,43 @@ describe('The driver dashboard', function () {
                 .contains('No trips.');
         });
 
-        it('Can receive a ride request', function() {
-            cy.server();
-            cy.route('GET', '**/api/trip/').as('getTrips');
+        it('Can receive a ride request', function () {
+          cy.server();
+          cy.route('GET', '**/api/trip/').as('getTrips');
 
-            logIn();
+          logIn();
 
-            cy.visit('/#/driver');
-            cy.wait('@getTrips');
+          cy.visit('/#/driver');
+          cy.wait('@getTrips');
 
-            // requested trips
-            cy.get('[data-cy=trip-card]')
-                .eq(1)
-                .contains('No trips.');
+          // Requested trips.
+          cy.get('[data-cy=trip-card]')
+            .eq(1)
+            .contains('No trips.');
 
-            // make trip request as rider
-            cy.request({
-                method: 'POST',
-                url: '/api/log_in/',
-                body: Cypress.env('rider')
-            }).then((response) => {
-                const token = response.body.access;
-                const ws = webSocket(`ws://localhost:8080/taxi/?token=${token}`);
-                ws.subscribe();
-
-                ws.next({
-                    type: 'create.trip',
-                    data: {
-                        pick_up_address: '123 Main Street',
-                        drop_off_address: '456 Elm Street',
-                        rider: 2
-                    }
-                });
+          // Make trip request as rider.
+          cy.request({
+            method: 'POST',
+            url: '/api/log_in/',
+            body: Cypress.env('rider')
+          }).then((response) => {
+            const token = response.body.access;
+            const ws = webSocket(`ws://localhost:8080/taxi/?token=${token}`);
+            ws.subscribe();
+            ws.next({
+              type: 'create.trip',
+              data: {
+                pick_up_address: '123 Main Street',
+                drop_off_address: '456 Elm Street',
+                rider: 2
+              }
             });
+          });
 
-            // requested trips
-            cy.get('[data-cy=trip-card]')
-                .eq(1)
-                .contains('REQUESTED')
+          // Requested trips.
+          cy.get('[data-cy=trip-card]')
+            .eq(1)
+            .contains('REQUESTED');
         });
     });
 

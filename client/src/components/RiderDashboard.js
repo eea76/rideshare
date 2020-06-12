@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Breadcrumb, Col, Row
 } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 import TripCard from './TripCard';
 import { getTrips } from '../services/TripService';
@@ -35,6 +36,7 @@ function RiderDashboard (props) {
           ...prevTrips.filter(trip => trip.id !== message.data.id),
           message.data
         ]);
+        updateToast(message.data);
       });
       return () => {
         subscription.unsubscribe();
@@ -55,6 +57,16 @@ function RiderDashboard (props) {
         return trips.filter(trip => {
             return trip.status === 'COMPLETED';
         });
+    };
+
+    const updateToast = (trip) => {
+        if (trip.status === 'STARTED') {
+          toast.info(`Driver ${trip.driver.username} is coming to pick you up.`);
+        } else if (trip.status === 'IN_PROGRESS') {
+          toast.info(`Driver ${trip.driver.username} is headed to your destination.`);
+        } else if (trip.status === 'COMPLETED') {
+          toast.info(`Driver ${trip.driver.username} has dropped you off.`);
+        }
     };
 
     return (
