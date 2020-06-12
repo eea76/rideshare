@@ -3,7 +3,9 @@ import {
     Breadcrumb, Col, Row
 } from 'react-bootstrap';
 
+import { webSocket } from 'rxjs/webSocket';
 import TripCard from './TripCard';
+import { getAccessToken } from '../services/AuthService';
 import { getTrips } from '../services/TripService';
 
 function DriverDashboard (props) {
@@ -22,6 +24,21 @@ function DriverDashboard (props) {
 
         loadTrips();
     }, []);
+
+    useEffect(() => {
+        const token = getAccessToken();
+        const ws = webSocket(`ws://localhost:8080/taxi/?token=${token}`);
+        const subscription = ws.subscribe((message) => {
+            setTrips(prevTrips => [
+                ...prevTrips.filter(trip => trip.id !== message.data.id),
+                message.data
+            ]);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        }
+    }, [])
 
     const getCurrentTrips = () => {
         return trips.filter(trip => {

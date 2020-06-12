@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
-    Button, Container, Form, Navbar
+    Button, Container, Form, Nav, Navbar
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
@@ -53,10 +53,24 @@ function App () {
                 <Navbar.Toggle />
                 <Navbar.Collapse>
                     {
-                        isLoggedIn &&
-                        <Form inline className='ml-auto'>
-                            <Button type='button' onClick={() => logOut()}>Log out</Button>
-                        </Form>
+                        isRider() && (
+                            <Nav className='mr-auto'>
+                                <LinkContainer to='/rider/request'>
+                                    <Nav.Link>Request a trip</Nav.Link>
+                                </LinkContainer>
+                            </Nav>
+                        )
+                    }
+
+                    {
+                        isLoggedIn && (
+                            <Form inline className='ml-auto'>
+                                <Button
+                                    type='button'
+                                    onClick={() => logOut()}
+                                >Log out</Button>
+                            </Form>
+                        )
                     }
                 </Navbar.Collapse>
             </Navbar>
