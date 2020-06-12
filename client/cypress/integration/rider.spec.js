@@ -94,5 +94,22 @@ describe('The rider dashboard', function() {
                 .eq(1)
                 .contains('COMPLETED');
         });
+
+        it('Shows details about a trip', () => {
+            const tripId = '676cb20b-d51d-44b5-951a-3e3c72a42668';
+
+            cy.server();
+            cy.route(`GET`, '**/api/trip/*/').as('getTrip');
+
+            logIn();
+
+            cy.visit(`/#/rider/${tripId}`);
+            cy.wait('@getTrip');
+
+            cy.get('[data-cy=trip-card]')
+                .should('have.length', 1)
+                .and('contain.text', 'Gary Cole')
+                .and('contain.text', 'STARTED');
+        });
     });
 })
