@@ -1,3 +1,5 @@
+import { webSocket } from 'rxjs/webSocket';
+
 const logIn = () => {
     const { username, password } = Cypress.env('rider');
     cy.server();
@@ -109,6 +111,48 @@ describe('The rider dashboard', function() {
             cy.get('[data-cy=trip-card]')
                 .eq(1)
                 .contains('COMPLETED');
+        });
+
+        it('Can receive trip status updates', function () {
+          cy.server();
+          cy.route('GET', '**/api/trip/').as('getTrips');
+
+          logIn();
+
+          cy.visit('/#/rider');
+          cy.wait('@getTrips');
+
+          // Current trips.
+          cy.get('[data-cy=trip-card]')
+            .eq(0)
+            .contains('STARTED');
+
+          // Make trip request as rider.
+          cy.request({
+            method: 'POST',
+            url: '/api/log_in/',
+            body: Cypress.env('rider')
+          }).then((response) => {
+            const token = response.body.access;
+            const ws = webSocket(`ws://localhost:8080/taxi/?token=${token}`);
+            ws.subscribe();
+            ws.next({
+              type: 'update.trip',
+              data: {
+                id: "676cb20b-d51d-44b5-951a-3e3c72a42668",
+                pick_up_address: "231 Oak Ridge Ln",
+                drop_off_address: "8746 Spring Hill Rd",
+                status: "IN_PROGRESS",
+                rider_id: 2,
+                driver_id: 1
+              }
+            });
+          });
+
+          // Current trips.
+          cy.get('[data-cy=trip-card]')
+            .eq(0)
+            .contains('IN_PROGRESS');
         });
 
         it('Shows details about a trip', () => {
