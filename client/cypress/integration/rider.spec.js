@@ -70,22 +70,6 @@ describe('The rider dashboard', function() {
                 .eq(1)
                 .contains('No trips.');
         });
-
-        it('Can request a new trip.', function() {
-            cy.server();
-            cy.route('GET', '**/api/trip/').as('getTrips');
-
-            logIn();
-
-            cy.visit('/#/rider/request');
-
-            cy.get('[data-cy=pick-up=address]').type('123 Main Street');
-            cy.get('[data-cy=drop-off-address]').type('456 South Street');
-            cy.get('[data-cy=submit]').click();
-
-            cy.wait('@getTrips');
-            cy.hash().should('eq', '#/rider');
-        })
     });
 
     context('When there are trips.', function() {
@@ -111,6 +95,39 @@ describe('The rider dashboard', function() {
             cy.get('[data-cy=trip-card]')
                 .eq(1)
                 .contains('COMPLETED');
+        });
+
+        it('Shows details about a trip', () => {
+            const tripId = '676cb20b-d51d-44b5-951a-3e3c72a42668';
+
+            cy.server();
+            cy.route(`GET`, '**/api/trip/*/').as('getTrip');
+
+            logIn();
+
+            cy.visit(`/#/rider/${tripId}`);
+            cy.wait('@getTrip');
+
+            cy.get('[data-cy=trip-card]')
+                .should('have.length', 1)
+                .and('contain.text', 'Gary Cole')
+                .and('contain.text', 'STARTED');
+        });
+
+        it('Can request a new trip.', function() {
+            cy.server();
+            cy.route('GET', '**/api/trip/').as('getTrips');
+
+            logIn();
+
+            cy.visit('/#/rider/request');
+
+            cy.get('[data-cy=pick-up-address]').type('123 Main Street');
+            cy.get('[data-cy=drop-off-address]').type('456 South Street');
+            cy.get('[data-cy=submit]').click();
+
+            cy.wait('@getTrips');
+            cy.hash().should('eq', '#/rider');
         });
 
         it('Can receive trip status updates', function () {
@@ -153,23 +170,6 @@ describe('The rider dashboard', function() {
           cy.get('[data-cy=trip-card]')
             .eq(0)
             .contains('IN_PROGRESS');
-        });
-
-        it('Shows details about a trip', () => {
-            const tripId = '676cb20b-d51d-44b5-951a-3e3c72a42668';
-
-            cy.server();
-            cy.route(`GET`, '**/api/trip/*/').as('getTrip');
-
-            logIn();
-
-            cy.visit(`/#/rider/${tripId}`);
-            cy.wait('@getTrip');
-
-            cy.get('[data-cy=trip-card]')
-                .should('have.length', 1)
-                .and('contain.text', 'Gary Cole')
-                .and('contain.text', 'STARTED');
         });
     });
 })
