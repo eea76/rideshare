@@ -26,7 +26,7 @@ class TripView(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.group == 'driver':
-            return Trips.objects.filter(
+            return Trip.objects.filter(
                 Q(status=Trip.REQUESTED) | Q(driver=user)
             )
 

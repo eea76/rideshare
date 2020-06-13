@@ -12,7 +12,6 @@ class UserAdmin(DefaultUserAdmin):
 class TripAdmin(admin.ModelAdmin):
     fields = (
         'id', 'pick_up_address', 'drop_off_address', 'status',
-        'driver', 'rider',
         'created', 'updated',
     )
 
